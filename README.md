@@ -106,61 +106,29 @@ The URL Checker application allows users to verify the validity of a URL and che
 
 4. throttle Function:
     ```javascript
-    // Throttle function to limit the rate of URL checks
-    function throttle(func, limit) {
-    let lastFunc; // Variable to store the last scheduled function call
-    let lastRan;  // Variable to store the timestamp of the last function execution
+    function throttle(func, delay) {
+    let timeoutId = null;
 
-    return function() {  // Return a new throttled function
-        const context = this; // Capture the context (this) of the calling function
-        const args = arguments; // Capture the arguments passed to the throttled function
-
-        if (!lastRan) {
-            // If the function has not been run yet
-            func.apply(context, args); // Execute the function immediately
-            lastRan = Date.now(); // Record the current timestamp
-        } else {
-            // If the function has been run, schedule the next execution
-            clearTimeout(lastFunc); // Clear the previously scheduled execution, if any
-
-            lastFunc = setTimeout(function() {
-                // Schedule a new function execution after the remaining time
-                if ((Date.now() - lastRan) >= limit) {
-                    // Check if the specified interval has passed since the last execution
-                    func.apply(context, args); // Execute the function
-                    lastRan = Date.now(); // Update the timestamp
-                }
-            }, limit - (Date.now() - lastRan));
-            // Calculate the remaining time and set the timeout accordingly
+    return function(...args) {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
         }
+        timeoutId = setTimeout(() => {
+            func(...args);
+        }, delay);
     };
     }
 
-- Function Definition:
-     - The throttle function takes two parameters
+
+- Function Description:
+     - Purpose: Limits the rate at which a function (func) is executed by ensuring it runs only after a specified delay period.
+     - Parameters:
          - func: The function to be throttled.
-         - limit: The time interval (in milliseconds) that must pass before func can be called again.
+         - delay: The time (in milliseconds) to wait before calling func again.  
       
-- Variables for State Management:
-    - lastFunc: Stores the identifier of the last scheduled function call (from setTimeout).
-    - lastRan: Stores the timestamp of the last actual function execution.
-
-- Return a New Throttled Function:
-    - The returned function will be called in place of the original func. It manages the throttling behavior.
-
-- Capture Context and Arguments:
-    - context: Captures the context (this) in which the throttled function is called.
-    - args: Captures the arguments passed to the throttled function.
- 
-- Immediate Execution on First Call:
-    - If lastRan is undefined (i.e., the function has not been called yet), the function is executed immediately.
-    - lastRan is then set to the current timestamp.
- 
-- Scheduling the Next Execution:
-    - If the function has been called before, any previously scheduled execution is cleared using clearTimeout(lastFunc).
-    - A new execution is scheduled using setTimeout.
-    - The setTimeout delay is calculated as limit - (Date.now() - lastRan), which ensures the function is executed only after the specified limit interval has passed since the last execution.
-    - Inside the setTimeout callback, it checks if the required interval has passed. If so, it executes the function and updates lastRan.  
+-Behavior:
+    - Cancels any previously scheduled call to func if a new call is made before the delay period elapses.
+    - Executes func only after the user has stopped triggering the function for the specified delay period.
 
 5. Event Handling and UI Updates:
      ```javascript
