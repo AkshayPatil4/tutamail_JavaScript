@@ -126,7 +126,7 @@ The URL Checker application allows users to verify the validity of a URL and che
          - func: The function to be throttled.
          - delay: The time (in milliseconds) to wait before calling func again.  
       
--Behavior:
+- Behavior:
     - Cancels any previously scheduled call to func if a new call is made before the delay period elapses.
     - Executes func only after the user has stopped triggering the function for the specified delay period.
 
