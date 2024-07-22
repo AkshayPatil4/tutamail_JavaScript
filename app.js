@@ -71,7 +71,7 @@ const checkUrl = throttle(async (url) => {
   }
 }, 1000); // Throttle limit of 1 second
 
-// Attach the event listener to the input field
+// Attached the event listener to the input field
 input.addEventListener("input", (event) => {
   checkUrl(event.target.value);
 });
